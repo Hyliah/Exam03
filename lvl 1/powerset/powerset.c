@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   powerset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlichten <hlichten@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hlichten <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 18:30:56 by hlichten          #+#    #+#             */
-/*   Updated: 2025/05/18 23:37:38 by hlichten         ###   ########.fr       */
+/*   Updated: 2025/05/19 01:06:35 by hlichten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,71 +22,64 @@ typedef enum e_bool
 t_bool is_valid_av(char **av)
 {
 	int i = 2;
-
+	int j;
 	while(av[i])
 	{
-		if (av[i][0] < '0' || av[i][0] > '9')
-			return (FALSE);
+		j = 0;
+		while (av[i][j])
+		{
+			if (av[i][j] < '0' || av[i][j] > '9')
+				return (FALSE);
+			j++;
+		}
 		i++;
 	}
 	return (TRUE);
 }
 
-int check(int result, int *retour)
+int check(int result, int *retour, int cnt)
 {
 	int sub = result;
 	int i = 0;
-	int size = (sizeof(retour) / sizeof(int));
-	printf("%d\n", size);
-	while (i < size)
-	{
-		sub = sub - (retour[i]);
-		i++;
-	}
+	while (i < cnt)
+		sub -= retour[i++];
 	return (sub);
 }
 
-void print_tab(int *tab, int size)
+void print_tab(int *tab, int count)
 {
 	int i = 0;
 
-	while (i < size)
+	while (i < count - 1)
 	{
 		printf("%d ", tab[i]);
 		i++;
 	}
-	printf("\n");
+	printf("%d\n", tab[i]);
 }
 
-t_bool	powerset(int *tab, int *retour, int i, int size, int result)
+t_bool	powerset(int *tab, int *retour, int i, int size, int result, int *count)
 {
 	// condition de sortie
-	if (i == size || check(result, retour) == 0) // quand on arrive a la fin 
+	if (i == size) // quand on arrive a la fin 
 	{
-		if (check(result, retour) == 0)
-			print_tab(retour, (sizeof(retour) / sizeof(int)));
+		if (check(result, retour, *count) == 0)
+			print_tab(retour, *count);
 		return (TRUE);
 	}
-
-	// recursive a deux branches
 	
 	//branche 1:
-	//if (check(result, retour, size) > 0)
-	//{
-	retour[i] = tab[i]; // on envoie dans une premiere branche avec le remplacement en mode espace
-	powerset(tab, retour, i + 1, size, result); // on augmente i de 1 et du coup le count de space de 1
-	//}
+	retour[*count] = tab[i];
+	(*count)++;
+	powerset(tab, retour, i + 1, size, result, count);
+	(*count)--;
 
 	//branche 2:
-	if (i + 1 < size)
-	{
-		retour[i] = tab[i + 1]; // on envoie dans une secnonde branche avec la parenthese actuelle
-		powerset(tab, retour, i + 1, size, result); // on augmente i de 1
-	}
+	powerset(tab, retour, i + 1, size, result, count);
+
 
 	return (FALSE);
 }
-
 
 int	main(int ac, char **av)
 {
@@ -94,24 +87,24 @@ int	main(int ac, char **av)
 	if (is_valid_av(av) == FALSE || ac < 3)
 		return (1);
 		
-		// etape 2 :  initiation (5 steps) 
-		int 	i = 0;
-		int		result = atoi(av[1]);
-		int		size = ac;
-		int		tab[ac - 2];
-		int		retour[ac - 1]; //creation d'une string a imprimer pour le printage de solution 
-		//            	        (ac - valeur - programme + '\0')
+	// etape 2 :  initiation (6 steps) 
+	int 	i = 0;
+	
+	int		result = atoi(av[1]);
+	int		size = ac - 2;
+	int		tab[size];
+	int		retour[size];
+	int		cnt = 0;
 
-	// etape 3 : initialisation du tableau (2 steps)
-	while (size > 2)
+	// etape 3 : initialisation du tableau (1 step)
+	while (i < size)
 	{
 		tab[i] = atoi(av[i + 2]); // a cause du programme + valeur
 		i++;
-		size--;
 	}
 	
-	// etape 3 : la recursive en arbre super style (1 step)
-	powerset(tab, retour, 0, ac - 2, result); // l argument recu && les init && deux count pour la recursive
+	// etape 4 : la recursive en arbre super style (1 step)
+	powerset(tab, retour, 0, size, result, &cnt);
 
 	return(0);
 }
