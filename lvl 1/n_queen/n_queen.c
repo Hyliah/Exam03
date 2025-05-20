@@ -6,43 +6,72 @@
 /*   By: hlichten <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 18:30:49 by hlichten          #+#    #+#             */
-/*   Updated: 2025/05/11 21:26:51 by hlichten         ###   ########.fr       */
+/*   Updated: 2025/05/20 18:38:31 by hlichten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
+#include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 typedef enum e_bool
 {
     FALSE,
     TRUE
 }    t_bool;
 
-t_bool    backtrack(parameters)
+t_bool is_safe(int *chess_board, int col, int row)
 {
-    // 1. Cas de base : Solution trouvee
-    if (condition d'arret)
+    int i = 0;
+    while (i < col)
     {
-        // Stocker ou afficher la solution
-        return TRUE; // Si on cherche une seule solution
+        if (chess_board[i] == row || chess_board[i] + i == row + col || chess_board[i] - i == row - col)
+            return FALSE;
+        i++;
     }
+    return TRUE;
+}
 
-    // 2. Exploration des choix possibles
-    while (choix parmi les possibilites actuelles)
+void    queens(int *chess_board, int n, int col)
+{
+    int i = 0;
+    int row = 0;
+
+    if (col >= n)
     {
-        // 3. Tester la validite
-        if (is_valid(choix))
+        while (i < n)
         {
-            appliquer_modification(choix);
-
-            // 4. Appel recursif
-            if (backtrack(nouvel etat))
-            {
-                return TRUE; // Arreter si une solution est trouvee
-            }
-
-            // 5. Backtracking : annuler les changements
-            annuler_modification(choix);
+            fprintf(stdout, "%d", chess_board[i]);
+            i++;
         }
+        fprintf(stdout, "\n");
     }
-    return FALSE;
-}*/
+
+    while (row < n)
+    {
+        if (is_safe(chess_board, col, row))
+        {
+            chess_board[col] = row;
+            queens(chess_board, n, col + 1);
+        }
+        row++;
+    }
+}
+
+int    main(int ac, char **av)
+{
+    // etape 1 : verification + print si erreur -> stderr (1 step)
+    if (ac != 2)
+    {
+        fprintf(stderr, "Error: usage ./queens n");
+        return 1;
+    } 
+    // etape 2 : creation du tableau de int sur la taille n (3 steps)
+    int    n = atoi(av[1]);
+    int chess_board[n];
+    queens(chess_board, n, 0);
+
+    return(0);
+}
+
+// 3 fonctions + 1 t_bool

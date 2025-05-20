@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   permutations.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlichten <hlichten@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hlichten <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 18:30:53 by hlichten          #+#    #+#             */
-/*   Updated: 2025/05/19 22:08:37 by hlichten         ###   ########.fr       */
+/*   Updated: 2025/05/20 18:31:58 by hlichten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,12 @@ t_bool is_reverse(char *str, int len)
 	return TRUE;
 }
 
-void	swap_current(char *str, int current, int last)
+void	swap_current(char *str, int first, int last)
 {
-	while (current < last)
+	while (first < last)
 	{
-		swap(&str[current], &str[last]);
-		current++;
+		swap(&str[first], &str[last]);
+		first++;
 		last--;
 	}
 }
@@ -82,22 +82,23 @@ void perm(char *str, int len)
 	int i;
 	int j;
 
-	if (is_reverse(str, len)) // fonction de sortie, des que notre entree est a l envers
+	// etape 1 : fonction de sortie, des que notre entree est a l envers (1 step)
+	if (is_reverse(str, len))
 		return;
 
-	// but final etant de ermuter jusqu a ce que la string de depart soit  l envers
-	i = len - 2; //on part 1 avant la fin
-	while (i >= 0 && str[i] >= str[i + 1]) // tant que la phrase est dans l ordre inverse alphabetique -> on diminue
+	// etape 2 : reset les i & j (2 steps)
+	i = len - 2;
+	while (i >= 0 && str[i] >= str[i + 1])
 		i--;
 
-	j = len - 1; // len - 1 = le dernier index
-	while (str[j] <= str[i]) // aller jusqu a ce qu on soit a plus loin dans l aplphabet
+	j = len - 1;
+	while (str[j] <= str[i])
 		j--;
 
+	// etape 3 : 2 swap + print + recursive (3 (4) steps)
 	swap(&str[i], &str[j]);
 	swap_current(str, i + 1, len - 1);
 	puts(str);
-
 	perm(str, len);
 }
 
@@ -118,3 +119,5 @@ int	main(int ac, char **av)
 
 	return (0);
 }
+
+// 7 fonctions + 1 t_bool

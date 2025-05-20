@@ -6,7 +6,7 @@
 /*   By: hlichten <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 18:30:56 by hlichten          #+#    #+#             */
-/*   Updated: 2025/05/19 01:06:35 by hlichten         ###   ########.fr       */
+/*   Updated: 2025/05/20 19:10:35 by hlichten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,3 +108,5 @@ int	main(int ac, char **av)
 
 	return(0);
 }
+
+// 5 fonctions + 1 t_bool
